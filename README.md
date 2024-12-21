@@ -7,11 +7,11 @@
 - Edon Thaqi
 
 ## Inhaltsverzeichnis 📜
-- [Einleitung 🚀](#einleitung-🚀)
-- [Anforderung 📋](#anforderung-📋)
-- [Installation 🛠️](#installation-🛠️)
-- [Testfälle 🔍](#testfälle-🔍)
-- [Fazit 🏁](#fazit-🏁)
+- Einleitung
+- Anforderung
+- Installation 
+- Testfälle 
+- Fazit
 
 ---
 
