@@ -86,7 +86,7 @@ Teste die Verbindung, indem du den folgenden Befehl ausführst:
 Wenn keine Fehler auftreten, ist die Verbindung korrekt eingerichtet.
 
 ### **4) Skript hinzufügen und ausführen**
-Navigiere zum Ordner, in dem du das Skript speichern möchtest [Hier geht's zum Skript](./Skript.md):
+Navigiere zum Ordner, in dem du das Skript speichern möchtest:
 
 **cd ~/Ordner**
 
@@ -94,7 +94,7 @@ Erstelle eine neue Datei für das Skript:
 
 **nano install_wordpress.sh**
 
-Kopiere das Installationsskript (in deinem Repository verfügbar) und füge es in die Datei ein.
+Kopiere das Installationsskript ([Hier geht's zum Skript](*Skript.md)) und füge es in die Datei ein.
 Speichere und schliesse die Datei.
 
 ### **5)Rechte vergeben**
