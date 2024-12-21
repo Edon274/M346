@@ -1,0 +1,135 @@
+#!/bin/bash
+
+# Set the necessary variables for the EC2 installation
+echo "Enter a name for the new SSH key: "
+read SSHKEY_NAME
+
+# Ensure the .ssh and .ssh/aws directories exist
+mkdir -p ~/.ssh/aws
+
+# Set permissions for .ssh and .ssh/aws
+echo "Setting permissions for .ssh and .ssh/aws directories..."
+chmod 700 ~/.ssh
+chmod 700 ~/.ssh/aws
+
+# Create a new SSH key pair
+echo "Creating SSH key pair..."
+aws ec2 create-key-pair \
+    --key-name $SSHKEY_NAME \
+    --key-type rsa \
+    --query 'KeyMaterial' \
+    --output text > ~/.ssh/aws/$SSHKEY_NAME.pem
+
+# Set correct permissions for the SSH key
+chmod 400 ~/.ssh/aws/$SSHKEY_NAME.pem
+
+echo "SSH key pair created and saved to ~/.ssh/aws/$SSHKEY_NAME.pem"
+
+# Create the security group
+SEC_GROUP_NAME="wordpressinstance-sec-group"
+echo "Creating Security Group: $SEC_GROUP_NAME"
+SEC_GROUP_ID=$(aws ec2 create-security-group \
+    --group-name $SEC_GROUP_NAME \
+    --description "Security group for WordPress EC2 instance" \
+    --query 'GroupId' \
+    --output text)
+
+# Open HTTP (80) and SSH (22) ports
+aws ec2 authorize-security-group-ingress \
+    --group-id $SEC_GROUP_ID \
+    --protocol tcp \
+    --port 80 \
+    --cidr 0.0.0.0/0
+
+aws ec2 authorize-security-group-ingress \
+    --group-id $SEC_GROUP_ID \
+    --protocol tcp \
+    --port 22 \
+    --cidr 0.0.0.0/0
+
+# Create the user-data script for EC2 instance setup
+cat > ~/wordpress-user-data.yml << END
+#cloud-config
+package_update: true
+package_upgrade: true
+packages:
+  - apache2
+  - mysql-server
+  - mysql-client
+  - php
+  - libapache2-mod-php
+  - php-mysql
+runcmd:
+  - systemctl enable apache2
+  - systemctl start apache2
+  - mysql -u root -e "CREATE DATABASE wordpress;"
+  - mysql -u root -e "CREATE USER 'wordpressuser'@'localhost' IDENTIFIED BY 'securepassword';"
+  - mysql -u root -e "GRANT ALL PRIVILEGES ON wordpress.* TO 'wordpressuser'@'localhost';"
+  - mysql -u root -e "FLUSH PRIVILEGES;"
+  - cd /var/www/html
+  - rm -f index.html
+  - wget https://wordpress.org/latest.tar.gz
+  - tar -xzf latest.tar.gz
+  - mv wordpress/* .
+  - rm -rf wordpress latest.tar.gz
+  - cp wp-config-sample.php wp-config.php
+  - sed -i "s/database_name_here/wordpress/" wp-config.php
+  - sed -i "s/username_here/wordpressuser/" wp-config.php
+  - sed -i "s/password_here/securepassword/" wp-config.php
+  - chown -R www-data:www-data /var/www/html
+  - chmod -R 755 /var/www/html
+END
+
+# Launch an EC2 instance
+echo "Launching EC2 instance..."
+INSTANCE_ID=$(aws ec2 run-instances \
+    --image-id ami-08c40ec9ead489470 \
+    --instance-type t2.micro \
+    --key-name $SSHKEY_NAME \
+    --security-group-ids $SEC_GROUP_ID \
+    --user-data file://~/wordpress-user-data.yml \
+    --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=WordPressInstance}]' \
+    --query 'Instances[0].InstanceId' \
+    --output text)
+
+# Wait for the instance to be running
+aws ec2 wait instance-running --instance-ids $INSTANCE_ID
+
+# Get the public IP of the instance
+PUBLIC_IP=$(aws ec2 describe-instances \
+    --instance-ids $INSTANCE_ID \
+    --query 'Reservations[0].Instances[0].PublicIpAddress' \
+    --output text)
+
+# Output the instance details
+echo "The WordPress instance is ready!"
+echo "Connect to the server using the following command:"
+echo "ssh -i ~/.ssh/aws/$SSHKEY_NAME.pem ubuntu@$PUBLIC_IP"
+echo "Open your browser and navigate to: http://$PUBLIC_IP to complete the WordPress setup."
+
+# Cleanup script to delete all resources created
+cat > ~/cleanup-wordpress.sh << CLEANUP
+#!/bin/bash
+
+# Terminate the EC2 instance
+echo "Terminating EC2 instance..."
+aws ec2 terminate-instances --instance-ids $INSTANCE_ID
+aws ec2 wait instance-terminated --instance-ids $INSTANCE_ID
+
+# Delete the security group
+echo "Deleting Security Group: $SEC_GROUP_NAME"
+aws ec2 delete-security-group --group-id $SEC_GROUP_ID
+
+# Delete the SSH key pair
+echo "Deleting SSH key pair: $SSHKEY_NAME"
+aws ec2 delete-key-pair --key-name $SSHKEY_NAME
+
+# Remove the local private key file
+echo "Removing local private key file..."
+rm ~/.ssh/aws/$SSHKEY_NAME.pem
+
+echo "All resources have been cleaned up."
+CLEANUP
+
+chmod +x ~/cleanup-wordpress.sh
+echo "Cleanup script created at ~/cleanup-wordpress.sh. Run this script to delete all resources."
