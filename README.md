@@ -143,3 +143,7 @@ Du solltest jetzt die Installationsseite von Wordpress sehen. 🥳
 
 ## **Fazit 🏁**
 
+Das Projekt war ein voller Erfolg, da wir alle relevanten Lernziele erfüllen konnten. Wir haben gemeinsam ein funktionierendes Skript entwickelt, das die Installation von WordPress auf einem AWS-Webserver automatisiert. Besonders wichtig war uns, dass das Projekt die technischen Anforderungen, wie die Nutzung der AWS CLI, das Erstellen eines automatisierten Skripts und die Konfiguration von Webservern und Datenbanken, abdeckt.
+
+### **Rilind**
+Da ich zuvor wenig Erfahrung mit AWS CLI und Git hatte, war dieses Projekt eine Herausforderung, die mich aber viel gelehrt hat. Besonders spannend fand ich die Arbeit mit der Cloud-Infrastruktur und die Automatisierung durch Skripte. Obwohl ich etwas Zeit gebraucht habe, um mich einzuarbeiten, bin ich stolz darauf, wie gut das Projekt am Ende funktioniert hat. Es war stressig, da wir parallel noch andere Aufgaben und Prüfungen hatten, aber es hat mir gezeigt, wie wichtig strukturierte Teamarbeit ist. Ich bin sicher, dass ich das Gelernte in meinem Betrieb anwenden kann, da Cloud-Lösungen dort immer wichtiger werden.
