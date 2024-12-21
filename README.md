@@ -52,6 +52,8 @@ Du solltest eine Ausgabe wie aws-cli/2.x.x erhalten.
 
 ![image](https://github.com/user-attachments/assets/11ee9f2f-3f45-49b0-90a8-0244f670bcbd)
 
+---
+
 ### **2) Konfiguration der AWS CLI**
 Jetzt konfigurieren wir die AWS CLI mit deinem AWS-Account:
 
@@ -63,6 +65,8 @@ Du wirst nach folgenden Angaben gefragt:
 - AWS Secret Access Key x (wird später noch überschrieben)
 - Default region name: us-east-1
 - Default output format: json
+
+---
 
 ### **3) Credentials aktualisieren**
 Melde dich bei deinem AWS Lab oder deinem AWS-Account an.
@@ -87,6 +91,8 @@ Füge den Inhalt, den du kopiert hast ein:
 
 Speichere und beende die Datei mit **CTRL+O, Enter** und **CTRL+X**.
 
+---
+
 ### **4) Verbindung testen**
 Teste die Verbindung, indem du den folgenden Befehl ausführst:
 
@@ -95,6 +101,8 @@ Teste die Verbindung, indem du den folgenden Befehl ausführst:
 ![image](https://github.com/user-attachments/assets/a8194f15-7dcf-418d-8b03-c2b02898ee3c)
 
 Wenn keine Fehler auftreten, ist die Verbindung korrekt eingerichtet.
+
+---
 
 ### **5) Skript hinzufügen und ausführen**
 Navigiere zum Ordner, in dem du das Skript speichern möchtest:
@@ -110,6 +118,8 @@ Speichere und schliesse die Datei mit **CTRL+O, Enter** und **CTRL+X**.
 
 ![image](https://github.com/user-attachments/assets/eb871404-e838-488b-849c-7ce915d804e3)
 
+---
+
 ### **6)Rechte vergeben**
 Mache das Skript ausführbar:
 
@@ -120,12 +130,14 @@ Starte die Installation, indem du das Skript ausführst:
 
 **./wp.sh**
 
+---
+
 ### **7) Browser öffnen**
 Sobald das Skript abgeschlossen ist, rufe die IP-Adresse deines AWS-Servers auf:
 
 ![image](https://github.com/user-attachments/assets/628e2278-12fe-47dd-8297-370996d24ca0)
 
-http://deine-IP/
+
 
 ![image](https://github.com/user-attachments/assets/75356a1e-d603-413b-bdee-5e3bdc247f15)
 
