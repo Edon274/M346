@@ -152,6 +152,8 @@ Du solltest jetzt die Installationsseite von Wordpress sehen. 🥳
 
 **Hier kommst du zum [Testfall für die Verbindung zum Webserver](Testfall_Verbindung_Webserver.md)**
 
+**Hier kommst du zum [Testfall für die SSH Verbindung](SSH_Verbindung.md)**
+
 ---
 
 ## **Fazit 🏁**
