@@ -53,7 +53,7 @@ Du solltest eine Ausgabe wie aws-cli/2.x.x erhalten.
 ### **1) Konfiguration der AWS CLI**
 Jetzt konfigurieren wir die AWS CLI mit deinem AWS-Account:
 
-aws configure
+**aws configure**
 
 Du wirst nach folgenden Angaben gefragt:
 
