@@ -14,6 +14,7 @@
 
 Die WordPress-Installationsseite wird im Browser angezeigt.
 
+![image](https://github.com/user-attachments/assets/c2e2a8a9-9e2c-4218-bf8a-4f20ea3f0cd6)
 
 
 ---
