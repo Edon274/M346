@@ -1,53 +1,53 @@
 #!/bin/bash
-
-# Setze die notwendigen Variablen für die EC2-Installation
-echo "Gib einen Namen für den neuen SSH-Schlüssel ein: "
+ 
+# Set the necessary variables for the EC2 installation
+echo "Enter a name for the new SSH key: "
 read SSHKEY_NAME
-
-# Stelle sicher, dass die Verzeichnisse .ssh und .ssh/aws existieren
+ 
+# Ensure the .ssh and .ssh/aws directories exist
 mkdir -p ~/.ssh/aws
-
-# Setze Berechtigungen für die Verzeichnisse .ssh und .ssh/aws
-echo "Setze Berechtigungen für die Verzeichnisse .ssh und .ssh/aws..."
+ 
+# Set permissions for .ssh and .ssh/aws
+echo "Setting permissions for .ssh and .ssh/aws directories..."
 chmod 700 ~/.ssh
 chmod 700 ~/.ssh/aws
-
-# Erstelle ein neues SSH-Schlüsselpaar
-echo "Erstelle ein neues SSH-Schlüsselpaar..."
+ 
+# Create a new SSH key pair
+echo "Creating SSH key pair..."
 aws ec2 create-key-pair \
     --key-name $SSHKEY_NAME \
     --key-type rsa \
     --query 'KeyMaterial' \
     --output text > ~/.ssh/aws/$SSHKEY_NAME.pem
-
-# Setze die richtigen Berechtigungen für den SSH-Schlüssel
+ 
+# Set correct permissions for the SSH key
 chmod 400 ~/.ssh/aws/$SSHKEY_NAME.pem
-
-echo "SSH-Schlüsselpaar wurde erstellt und unter ~/.ssh/aws/$SSHKEY_NAME.pem gespeichert"
-
-# Erstelle die Sicherheitsgruppe
+ 
+echo "SSH key pair created and saved to ~/.ssh/aws/$SSHKEY_NAME.pem"
+ 
+# Create the security group
 SEC_GROUP_NAME="wordpressinstance-sec-group"
-echo "Erstelle Sicherheitsgruppe: $SEC_GROUP_NAME"
+echo "Creating Security Group: $SEC_GROUP_NAME"
 SEC_GROUP_ID=$(aws ec2 create-security-group \
     --group-name $SEC_GROUP_NAME \
-    --description "Sicherheitsgruppe für die WordPress EC2-Instanz" \
+    --description "Security group for WordPress EC2 instance" \
     --query 'GroupId' \
     --output text)
-
-# Öffne HTTP (Port 80) und SSH (Port 22)
+ 
+# Open HTTP (80) and SSH (22) ports
 aws ec2 authorize-security-group-ingress \
     --group-id $SEC_GROUP_ID \
     --protocol tcp \
     --port 80 \
     --cidr 0.0.0.0/0
-
+ 
 aws ec2 authorize-security-group-ingress \
     --group-id $SEC_GROUP_ID \
     --protocol tcp \
     --port 22 \
     --cidr 0.0.0.0/0
-
-# Erstelle ein User-Data-Skript für die EC2-Instanz-Einrichtung
+ 
+# Create the user-data script for EC2 instance setup
 cat > ~/wordpress-user-data.yml << END
 #cloud-config
 package_update: true
@@ -60,15 +60,15 @@ packages:
   - libapache2-mod-php
   - php-mysql
 runcmd:
-  - systemctl enable apache2 # Apache-Server beim Systemstart aktivieren
-  - systemctl start apache2  # Apache-Server starten
-  - mysql -u root -e "CREATE DATABASE wordpress;" # WordPress-Datenbank erstellen
+  - systemctl enable apache2
+  - systemctl start apache2
+  - mysql -u root -e "CREATE DATABASE wordpress;"
   - mysql -u root -e "CREATE USER 'wordpressuser'@'localhost' IDENTIFIED BY 'securepassword';"
   - mysql -u root -e "GRANT ALL PRIVILEGES ON wordpress.* TO 'wordpressuser'@'localhost';"
-  - mysql -u root -e "FLUSH PRIVILEGES;" # Berechtigungen anwenden
+  - mysql -u root -e "FLUSH PRIVILEGES;"
   - cd /var/www/html
-  - rm -f index.html # Entferne die Standardseite
-  - wget https://wordpress.org/latest.tar.gz # Lade die neueste WordPress-Version herunter
+  - rm -f index.html
+  - wget https://wordpress.org/latest.tar.gz
   - tar -xzf latest.tar.gz
   - mv wordpress/* .
   - rm -rf wordpress latest.tar.gz
@@ -76,12 +76,12 @@ runcmd:
   - sed -i "s/database_name_here/wordpress/" wp-config.php
   - sed -i "s/username_here/wordpressuser/" wp-config.php
   - sed -i "s/password_here/securepassword/" wp-config.php
-  - chown -R www-data:www-data /var/www/html # Setze Dateibesitzer auf Apache-Nutzer
+  - chown -R www-data:www-data /var/www/html
   - chmod -R 755 /var/www/html
 END
-
-# Starte eine EC2-Instanz
-echo "Starte EC2-Instanz..."
+ 
+# Launch an EC2 instance
+echo "Launching EC2 instance..."
 INSTANCE_ID=$(aws ec2 run-instances \
     --image-id ami-08c40ec9ead489470 \
     --instance-type t2.micro \
@@ -91,45 +91,45 @@ INSTANCE_ID=$(aws ec2 run-instances \
     --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=WordPressInstance}]' \
     --query 'Instances[0].InstanceId' \
     --output text)
-
-# Warte, bis die EC2-Instanz den Status "running" erreicht
+ 
+# Wait for the instance to be running
 aws ec2 wait instance-running --instance-ids $INSTANCE_ID
-
-# Hole die öffentliche IP-Adresse der Instanz
+ 
+# Get the public IP of the instance
 PUBLIC_IP=$(aws ec2 describe-instances \
     --instance-ids $INSTANCE_ID \
     --query 'Reservations[0].Instances[0].PublicIpAddress' \
     --output text)
-
-# Gib die Verbindungsdetails aus
-echo "Die WordPress-Instanz ist bereit!"
-echo "Verbinde dich mit folgendem Befehl mit dem Server:"
+ 
+# Output the instance details
+echo "The WordPress instance is ready!"
+echo "Connect to the server using the following command:"
 echo "ssh -i ~/.ssh/aws/$SSHKEY_NAME.pem ubuntu@$PUBLIC_IP"
-echo "Öffne deinen Browser und navigiere zu: http://$PUBLIC_IP, um die WordPress-Einrichtung abzuschliessen."
-
-# Skript zur Bereinigung aller erstellten Ressourcen
+echo "Open your browser and navigate to: http://$PUBLIC_IP to complete the WordPress setup."
+ 
+# Cleanup script to delete all resources created
 cat > ~/cleanup-wordpress.sh << CLEANUP
 #!/bin/bash
-
-# Beende die EC2-Instanz
-echo "Beende EC2-Instanz..."
+ 
+# Terminate the EC2 instance
+echo "Terminating EC2 instance..."
 aws ec2 terminate-instances --instance-ids $INSTANCE_ID
 aws ec2 wait instance-terminated --instance-ids $INSTANCE_ID
-
-# Lösche die Sicherheitsgruppe
-echo "Lösche Sicherheitsgruppe: $SEC_GROUP_NAME"
+ 
+# Delete the security group
+echo "Deleting Security Group: $SEC_GROUP_NAME"
 aws ec2 delete-security-group --group-id $SEC_GROUP_ID
-
-# Lösche das SSH-Schlüsselpaar
-echo "Lösche SSH-Schlüsselpaar: $SSHKEY_NAME"
+ 
+# Delete the SSH key pair
+echo "Deleting SSH key pair: $SSHKEY_NAME"
 aws ec2 delete-key-pair --key-name $SSHKEY_NAME
-
-# Entferne die lokale private Schlüsseldatei
-echo "Entferne lokale private Schlüsseldatei..."
+ 
+# Remove the local private key file
+echo "Removing local private key file..."
 rm ~/.ssh/aws/$SSHKEY_NAME.pem
-
-echo "Alle Ressourcen wurden bereinigt."
+ 
+echo "All resources have been cleaned up."
 CLEANUP
-
+ 
 chmod +x ~/cleanup-wordpress.sh
-echo "Bereinigungs-Skript erstellt unter ~/cleanup-wordpress.sh. Führe dieses Skript aus, um alle Ressourcen zu löschen."
+echo "Cleanup script created at ~/cleanup-wordpress.sh. Run this script to delete all resources."
