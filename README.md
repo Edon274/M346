@@ -160,3 +160,8 @@ Das Projekt war ein voller Erfolg, da wir alle relevanten Lernziele erfüllen ko
 
 ### **Rilind**
 Da ich zuvor wenig Erfahrung mit AWS CLI und Git hatte, war dieses Projekt eine Herausforderung, die mich aber viel gelehrt hat. Besonders spannend fand ich die Arbeit mit der Cloud-Infrastruktur und die Automatisierung durch Skripte. Obwohl ich etwas Zeit gebraucht habe, um mich einzuarbeiten, bin ich stolz darauf, wie gut das Projekt am Ende funktioniert hat. Es war stressig, da wir parallel noch andere Aufgaben und Prüfungen hatten, aber es hat mir gezeigt, wie wichtig strukturierte Teamarbeit ist. Ich bin sicher, dass ich das Gelernte in meinem Betrieb anwenden kann, da Cloud-Lösungen dort immer wichtiger werden.
+
+### **Savvas**
+
+
+Das Projekt war echt spannend, vor allem weil ich vorher nicht viel mit Cloud-Technologien gemacht habe. Mit AWS zu arbeiten und das Skript zu erstellen, hat mir gezeigt, wie wichtig eine gute Planung und klare Aufgabenverteilung sind. Im Team habe ich viel gelernt, besonders was Git angeht und wie man Workflows automatisiert. Die Zeit war manchmal knapp, aber wir haben es trotzdem geschafft, alles hinzukriegen und ein gutes Ergebnis abzuliefern. Ich bin froh, dass ich bei diesem Projekt dabei war, und ich weiss, dass das, was ich gelernt habe, in Zukunft noch richtig nützlich sein wird.
