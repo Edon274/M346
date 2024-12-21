@@ -1,3 +1,9 @@
+#!/bin/bash
+
+# Setze die notwendigen Variablen für die EC2-Installation
+echo "Gib einen Namen für den neuen SSH-Schlüssel ein: "
+read SSHKEY_NAME
+
 # Stelle sicher, dass die Verzeichnisse .ssh und .ssh/aws existieren
 mkdir -p ~/.ssh/aws
 
@@ -17,9 +23,9 @@ aws ec2 create-key-pair \
 # Setze die richtigen Berechtigungen für den SSH-Schlüssel
 chmod 400 ~/.ssh/aws/$SSHKEY_NAME.pem
 
-echo "SSH-Schlüsselpaar wurde erstellt und gespeichert unter ~/.ssh/aws/$SSHKEY_NAME.pem"
+echo "SSH-Schlüsselpaar wurde erstellt und unter ~/.ssh/aws/$SSHKEY_NAME.pem gespeichert"
 
-# Erstelle eine Sicherheitsgruppe für die WordPress-Instanz
+# Erstelle die Sicherheitsgruppe
 SEC_GROUP_NAME="wordpressinstance-sec-group"
 echo "Erstelle Sicherheitsgruppe: $SEC_GROUP_NAME"
 SEC_GROUP_ID=$(aws ec2 create-security-group \
@@ -28,7 +34,7 @@ SEC_GROUP_ID=$(aws ec2 create-security-group \
     --query 'GroupId' \
     --output text)
 
-# Öffne die Ports HTTP (80) und SSH (22)
+# Öffne HTTP (Port 80) und SSH (Port 22)
 aws ec2 authorize-security-group-ingress \
     --group-id $SEC_GROUP_ID \
     --protocol tcp \
@@ -41,7 +47,7 @@ aws ec2 authorize-security-group-ingress \
     --port 22 \
     --cidr 0.0.0.0/0
 
-# Erstelle ein user-data-Skript für die Einrichtung der EC2-Instanz
+# Erstelle ein User-Data-Skript für die EC2-Instanz-Einrichtung
 cat > ~/wordpress-user-data.yml << END
 #cloud-config
 package_update: true
@@ -74,7 +80,7 @@ runcmd:
   - chmod -R 755 /var/www/html
 END
 
-# Starte eine EC2-Instanz mit den oben definierten Konfigurationen
+# Starte eine EC2-Instanz
 echo "Starte EC2-Instanz..."
 INSTANCE_ID=$(aws ec2 run-instances \
     --image-id ami-08c40ec9ead489470 \
@@ -86,16 +92,16 @@ INSTANCE_ID=$(aws ec2 run-instances \
     --query 'Instances[0].InstanceId' \
     --output text)
 
-# Warte, bis die EC2-Instanz im Status "running" ist
+# Warte, bis die EC2-Instanz den Status "running" erreicht
 aws ec2 wait instance-running --instance-ids $INSTANCE_ID
 
-# Hole die öffentliche IP der Instanz
+# Hole die öffentliche IP-Adresse der Instanz
 PUBLIC_IP=$(aws ec2 describe-instances \
     --instance-ids $INSTANCE_ID \
     --query 'Reservations[0].Instances[0].PublicIpAddress' \
     --output text)
 
-# Ausgabe der Verbindungsdetails
+# Gib die Verbindungsdetails aus
 echo "Die WordPress-Instanz ist bereit!"
 echo "Verbinde dich mit folgendem Befehl mit dem Server:"
 echo "ssh -i ~/.ssh/aws/$SSHKEY_NAME.pem ubuntu@$PUBLIC_IP"
