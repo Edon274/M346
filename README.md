@@ -94,7 +94,7 @@ Erstelle eine neue Datei für das Skript:
 
 **nano install_wordpress.sh**
 
-Kopiere das Installationsskript ([Hier geht's zum Skript](*Skript.md)) und füge es in die Datei ein.
+Kopiere das Installationsskript ([Hier geht's zum Skript](Skript.md)) und füge es in die Datei ein.
 Speichere und schliesse die Datei.
 
 ### **5)Rechte vergeben**
