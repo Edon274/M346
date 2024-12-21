@@ -75,6 +75,7 @@ Gehe zu den AWS Details und kopiere die dort angezeigten Zugangsdaten (AWS CLI).
 ![image](https://github.com/user-attachments/assets/b274df54-cd11-4ee5-a92e-b425f8663654)
 
 ![image](https://github.com/user-attachments/assets/bee4a4de-7fb2-483d-b924-980ecdefea74)
+
 **Auf Show klicken.**
 
 ![image](https://github.com/user-attachments/assets/6f7b429b-a2b0-4025-b40c-aaf76382ef8c)
