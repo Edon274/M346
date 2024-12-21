@@ -7,7 +7,7 @@
 - Edon Thaqi
 
 ## Inhaltsverzeichnis 📜
-- [Einleitung](#einleitung)
+- [Einleitung](einleitung)
 - [Anforderung](#anforderung)
 - [Installation](#installation)
 - [Testfälle](#testfälle)
