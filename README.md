@@ -23,7 +23,12 @@ In diesem Projekt haben wir ein Skript entwickelt, das die Installation eines Ap
 
 ## **Anforderungen 📋**
 
+Damit das Skript funktioniert, braucht man:
 
+- Einen AWS-Account
+- Die AWS-CLI, um Befehle auszuführen
+- Git, um das Projekt herunterzuladen
+- Einen Browser, um später die WordPress-Seite zu öffnen
 
 ---
 
