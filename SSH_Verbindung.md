@@ -17,7 +17,7 @@
 
 Du siehst die Willkommensnachricht oder den Prompt des Servers.
 
-
+![image](https://github.com/user-attachments/assets/2e83178b-7b2f-4bd1-9e04-8f462e2bcc4f)
 
 ---
 
