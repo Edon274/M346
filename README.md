@@ -78,7 +78,7 @@ aws_session_token=DeinSessionToken
 
 Speichere und beende die Datei mit CTRL+O, Enter und CTRL+X.
 
-### **3) Verbindung testen
+### **3) Verbindung testen**
 Teste die Verbindung, indem du den folgenden Befehl ausführst:
 
 **aws s3 ls**
@@ -107,12 +107,12 @@ Starte die Installation, indem du das Skript ausführst:
 
 **./install_wordpress.sh**
 
-### **6) Browser öffnen**
+### **7) Browser öffnen**
 Sobald das Skript abgeschlossen ist, rufe die IP-Adresse deines AWS-Servers auf:
 
-http://<deine-IP>/
+http://deine-IP/
 
-Du solltest jetzt die Installationsseite von Wordpress sehen.
+Du solltest jetzt die Installationsseite von Wordpress sehen. 🥳
 ---
 
 ## **Testfälle 🔍**
